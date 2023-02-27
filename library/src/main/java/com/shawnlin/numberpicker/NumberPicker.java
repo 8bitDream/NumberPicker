@@ -1,5 +1,6 @@
 package com.shawnlin.numberpicker;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -49,6 +50,7 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 /**
  * A widget that enables the user to select a number from a predefined range.
  */
+@SuppressWarnings("unused")
 public class NumberPicker extends LinearLayout {
 
     @Retention(SOURCE)
@@ -1051,6 +1053,7 @@ public class NumberPicker extends LinearLayout {
         return true;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (!isEnabled()) {

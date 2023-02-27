@@ -59,6 +59,7 @@ import android.view.animation.Interpolator;
  *    ...
  * }</pre>
  */
+@SuppressWarnings("unused")
 public class Scroller  {
     private final Interpolator mInterpolator;
 

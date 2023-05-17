@@ -328,16 +328,6 @@ public class NumberPicker extends LinearLayout {
     private Typeface mTypeface;
 
     /**
-     * The width of the gap between text elements if the selector wheel.
-     */
-    private int mSelectorTextGapWidth;
-
-    /**
-     * The height of the gap between text elements if the selector wheel.
-     */
-    private int mSelectorTextGapHeight;
-
-    /**
      * The values to be displayed instead the indices.
      */
     private String[] mDisplayedValues;
@@ -485,12 +475,12 @@ public class NumberPicker extends LinearLayout {
     /**
      * @see ViewConfiguration#getScaledTouchSlop()
      */
-    private int mTouchSlop;
+    private final int mTouchSlop;
 
     /**
      * @see ViewConfiguration#getScaledMinimumFlingVelocity()
      */
-    private int mMinimumFlingVelocity;
+    private final int mMinimumFlingVelocity;
 
     /**
      * @see ViewConfiguration#getScaledMaximumFlingVelocity()
@@ -525,7 +515,7 @@ public class NumberPicker extends LinearLayout {
     /**
      * The thickness of the divider.
      */
-    private int mDividerLength;
+    private final int mDividerLength;
 
     /**
      * The thickness of the divider.
@@ -570,7 +560,7 @@ public class NumberPicker extends LinearLayout {
     /**
      * Flag whether the selector wheel should hidden until the picker has focus.
      */
-    private boolean mHideWheelUntilFocused;
+    private final boolean mHideWheelUntilFocused;
 
     /**
      * The orientation of this widget.
@@ -610,12 +600,12 @@ public class NumberPicker extends LinearLayout {
     /**
      * Flag whether the accessibility description enabled.
      */
-    private boolean mAccessibilityDescriptionEnabled = true;
+    private boolean mAccessibilityDescriptionEnabled;
 
     /**
      * The context of this widget.
      */
-    private Context mContext;
+    private final Context mContext;
 
     /**
      * The number formatter for current locale.
@@ -625,7 +615,7 @@ public class NumberPicker extends LinearLayout {
     /**
      * The view configuration of this widget.
      */
-    private ViewConfiguration mViewConfiguration;
+    private final ViewConfiguration mViewConfiguration;
 
     /**
      * Interface to listen for changes of the current value.
@@ -645,7 +635,7 @@ public class NumberPicker extends LinearLayout {
     /**
      * The amount of space between items.
      */
-    private int mItemSpacing = 0;
+    private int mItemSpacing;
 
     /**
      * Interface to listen for the picker scroll state.
@@ -654,23 +644,23 @@ public class NumberPicker extends LinearLayout {
 
         @IntDef({SCROLL_STATE_IDLE, SCROLL_STATE_TOUCH_SCROLL, SCROLL_STATE_FLING})
         @Retention(RetentionPolicy.SOURCE)
-        public @interface ScrollState {
+        @interface ScrollState {
         }
 
         /**
          * The view is not scrolling.
          */
-        public static int SCROLL_STATE_IDLE = 0;
+        int SCROLL_STATE_IDLE = 0;
 
         /**
          * The user is scrolling using touch, and his finger is still on the screen.
          */
-        public static int SCROLL_STATE_TOUCH_SCROLL = 1;
+        int SCROLL_STATE_TOUCH_SCROLL = 1;
 
         /**
          * The user had previously been scrolling using touch and performed a fling.
          */
-        public static int SCROLL_STATE_FLING = 2;
+        int SCROLL_STATE_FLING = 2;
 
         /**
          * Callback invoked while the number picker scroll state has changed.
@@ -681,7 +671,7 @@ public class NumberPicker extends LinearLayout {
          *                    {@link #SCROLL_STATE_TOUCH_SCROLL} or
          *                    {@link #SCROLL_STATE_IDLE}.
          */
-        public void onScrollStateChange(NumberPicker view, @ScrollState int scrollState);
+        void onScrollStateChange(NumberPicker view, @ScrollState int scrollState);
     }
 
     /**
@@ -695,7 +685,7 @@ public class NumberPicker extends LinearLayout {
          * @param value The currently selected value.
          * @return A formatted string representation.
          */
-        public String format(int value);
+        String format(int value);
     }
 
     /**
@@ -1610,7 +1600,6 @@ public class NumberPicker extends LinearLayout {
      * Sets the min value of the picker.
      *
      * @param minValue The min value inclusive.
-     *
      *                 <strong>Note:</strong> The length of the displayed values array
      *                 set via {@link #setDisplayedValues(String[])} must be equal to the
      *                 range of selectable numbers which is equal to
@@ -1645,7 +1634,6 @@ public class NumberPicker extends LinearLayout {
      * Sets the max value of the picker.
      *
      * @param maxValue The max value inclusive.
-     *
      *                 <strong>Note:</strong> The length of the displayed values array
      *                 set via {@link #setDisplayedValues(String[])} must be equal to the
      *                 range of selectable numbers which is equal to
@@ -1680,7 +1668,6 @@ public class NumberPicker extends LinearLayout {
      * Sets the values to be displayed.
      *
      * @param displayedValues The displayed values.
-     *
      *                        <strong>Note:</strong> The length of the displayed values array
      *                        must be equal to the range of selectable numbers which is equal to
      *                        {@link #getMaxValue()} - {@link #getMinValue()} + 1.
@@ -2033,13 +2020,10 @@ public class NumberPicker extends LinearLayout {
         int specSize = MeasureSpec.getSize(measureSpec);
         switch (specMode) {
             case MeasureSpec.UNSPECIFIED:
-                result = size;
                 break;
             case MeasureSpec.AT_MOST:
                 if (specSize < size) {
                     result = specSize | MEASURED_STATE_TOO_SMALL;
-                } else {
-                    result = size;
                 }
                 break;
             case MeasureSpec.EXACTLY:
@@ -2162,12 +2146,18 @@ public class NumberPicker extends LinearLayout {
         float textGapCount = selectorIndices.length;
         if (isHorizontalMode()) {
             float totalTextGapWidth = (getRight() - getLeft()) - totalTextSize;
-            mSelectorTextGapWidth = (int) (totalTextGapWidth / textGapCount);
+            /*
+             * The width of the gap between text elements if the selector wheel.
+             */
+            int mSelectorTextGapWidth = (int) (totalTextGapWidth / textGapCount);
             mSelectorElementSize = (int) getMaxTextSize() + mSelectorTextGapWidth;
             mInitialScrollOffset = (int) (mSelectedTextCenterX - mSelectorElementSize * mWheelMiddleItemIndex);
         } else {
             float totalTextGapHeight = (getBottom() - getTop()) - totalTextSize;
-            mSelectorTextGapHeight = (int) (totalTextGapHeight / textGapCount);
+            /*
+             * The height of the gap between text elements if the selector wheel.
+             */
+            int mSelectorTextGapHeight = (int) (totalTextGapHeight / textGapCount);
             mSelectorElementSize = (int) getMaxTextSize() + mSelectorTextGapHeight;
             mInitialScrollOffset = (int) (mSelectedTextCenterY - mSelectorElementSize * mWheelMiddleItemIndex);
         }
@@ -2400,13 +2390,8 @@ public class NumberPicker extends LinearLayout {
      * @return The selected index given its displayed <code>value</code>.
      */
     private int getSelectedPos(String value) {
-        if (mDisplayedValues == null) {
-            try {
-                return Integer.parseInt(value);
-            } catch (NumberFormatException e) {
-                // Ignore as if it's not a number we don't care
-            }
-        } else {
+        // Ignore as if it's not a number we don't care
+        if (mDisplayedValues != null) {
             for (int i = 0; i < mDisplayedValues.length; i++) {
                 // Don't force the user to type in jan when ja will do
                 value = value.toLowerCase();
@@ -2419,11 +2404,11 @@ public class NumberPicker extends LinearLayout {
              * The user might have typed in a number into the month field i.e.
              * 10 instead of OCT so support that too.
              */
-            try {
-                return Integer.parseInt(value);
-            } catch (NumberFormatException e) {
-                // Ignore as if it's not a number we don't care
-            }
+        }
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            // Ignore as if it's not a number we don't care
         }
         return mMinValue;
     }
@@ -2523,7 +2508,7 @@ public class NumberPicker extends LinearLayout {
                 }
                 String result = String.valueOf(dest.subSequence(0, dstart)) + filtered
                         + dest.subSequence(dend, dest.length());
-                String str = String.valueOf(result).toLowerCase();
+                String str = result.toLowerCase();
                 for (String val : mDisplayedValues) {
                     String valLowerCase = val.toLowerCase();
                     if (valLowerCase.startsWith(str)) {
@@ -2645,12 +2630,7 @@ public class NumberPicker extends LinearLayout {
             return null;
         }
 
-        return new Formatter() {
-            @Override
-            public String format(int i) {
-                return String.format(Locale.getDefault(), formatter, i);
-            }
-        };
+        return i -> String.format(Locale.getDefault(), formatter, i);
     }
 
     private void setWidthAndHeight() {
